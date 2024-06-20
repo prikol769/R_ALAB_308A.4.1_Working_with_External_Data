@@ -39,7 +39,7 @@ export function start() {
   );
   if (window.matchMedia("(min-width: 768px)").matches) {
     const carousel = new bootstrap.Carousel(multipleCardCarousel, {
-      interval: false
+      interval: false,
     });
     const carouselWidth = $(".carousel-inner")[0].scrollWidth;
     const cardWidth = $(".carousel-item").width();
