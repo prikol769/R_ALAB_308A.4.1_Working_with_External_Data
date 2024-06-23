@@ -46,7 +46,9 @@ const initialLoad = async () => {
   createCarouselItems(dataBreeds[0].id);
 
   const infoArr = [
-    { infoName: "description:", infoValue: dataBreeds[0].description },
+    { infoName: "Origin:", infoValue: dataBreeds[0].origin },
+    { infoName: "Temperament:", infoValue: dataBreeds[0].temperament },
+    { infoName: "Description:", infoValue: dataBreeds[0].description },
   ];
   addBreedInfo(infoArr);
 };
@@ -94,25 +96,48 @@ const createCarouselItems = async (breedId) => {
     Carousel.appendCarousel(carouselItem);
   }
   Carousel.start();
+
+  return dataBreed;
 };
 
 const addBreedInfo = (descArr) => {
+  while (infoDump.firstChild) {
+    infoDump.removeChild(infoDump.firstChild);
+  }
+
   for (let i = 0; i < descArr.length; i++) {
     const pEl = document.createElement("p");
     const spanEl = document.createElement("span");
+    const divEl = document.createElement("div");
+
+    divEl.style.display = "flex";
+    divEl.style.gap = "10px";
 
     spanEl.textContent = descArr[i].infoName;
     spanEl.style.fontWeight = "600";
-    pEl.innerText = descArr[i].infoValue;
-    pEl.appendChild(spanEl);
-    infoDump.appendChild(pEl);
+
+    pEl.textContent = descArr[i].infoValue;
+
+    divEl.appendChild(spanEl);
+    divEl.appendChild(pEl);
+
+    infoDump.appendChild(divEl);
   }
 };
 
 const breedSelectHandler = async (event) => {
   const breedId = event.target.value;
 
-  createCarouselItems(breedId);
+  const dataBreed = await createCarouselItems(breedId);
+
+  console.log(dataBreed, "dataBreed");
+
+  const infoArr = [
+    { infoName: "Origin:", infoValue: dataBreed[0].breeds[0].origin },
+    { infoName: "Temperament:", infoValue: dataBreed[0].breeds[0].temperament },
+    { infoName: "Description:", infoValue: dataBreed[0].breeds[0].description },
+  ];
+  addBreedInfo(infoArr);
 };
 
 breedSelect.addEventListener("change", breedSelectHandler);
