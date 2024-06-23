@@ -16,6 +16,20 @@ const progressBar = document.getElementById("progressBar");
 // The get favourites button element.
 const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
+const updateProgress = (progressEvent) => {
+  const percentage = Math.round(
+    (progressEvent.loaded * 100) / progressEvent.total
+  );
+  if (percentage === 100) {
+    progressBar.style.width = `${percentage}%`;
+    setTimeout(() => {
+      progressBar.style.width = "0%";
+    }, 400);
+  } else {
+    progressBar.style.width = `${percentage}%`;
+  }
+};
+
 export const getBreeds = async () => {
   axios.interceptors.request.use((request) => {
     console.log("requests begin");
@@ -39,7 +53,9 @@ export const getBreeds = async () => {
     }
   );
 
-  const response = await axios("/breeds");
+  const response = await axios("/breeds", {
+    onDownloadProgress: updateProgress,
+  });
 
   const { data, durationInMS } = response;
   console.log(`Request took ${durationInMS} milliseconds.`);
@@ -48,7 +64,9 @@ export const getBreeds = async () => {
 };
 
 export const getBreedById = async (breedId) => {
-  const response = await axios(`/images/search?limit=10&breed_ids=${breedId}`);
+  const response = await axios(`/images/search?limit=10&breed_ids=${breedId}`, {
+    onDownloadProgress: updateProgress,
+  });
 
   const dataBreed = response.data;
 
