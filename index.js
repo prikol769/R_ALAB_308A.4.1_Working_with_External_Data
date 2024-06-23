@@ -1,4 +1,5 @@
 import * as Carousel from "./Carousel.js";
+import { getBreeds, getBreedById } from "./additionalFileWithAxios.js";
 import axios from "axios";
 
 // The breed selection input element.
@@ -24,13 +25,15 @@ const API_KEY =
  */
 
 const initialLoad = async () => {
-  const response = await fetch("https://api.thecatapi.com/v1/breeds", {
-    headers: {
-      "x-api-key": API_KEY,
-    },
-  });
+  // const response = await fetch("https://api.thecatapi.com/v1/breeds", {
+  //   headers: {
+  //     "x-api-key": API_KEY,
+  //   },
+  // });
 
-  const dataBreeds = await response.json();
+  // const dataBreeds = await response.json();
+
+  const dataBreeds = await getBreeds();
 
   console.log("dataBreeds", dataBreeds);
 
@@ -71,18 +74,20 @@ initialLoad();
  */
 
 const createCarouselItems = async (breedId) => {
-  const response = await fetch(
-    `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedId}`,
-    {
-      headers: {
-        "x-api-key": API_KEY,
-      },
-    }
-  );
+  // const response = await fetch(
+  //   `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedId}`,
+  //   {
+  //     headers: {
+  //       "x-api-key": API_KEY,
+  //     },
+  //   }
+  // );
 
-  const dataBreed = await response.json();
+  // const dataBreed = await response.json();
 
-  console.log("dataBreeds", dataBreed);
+  const dataBreed = await getBreedById(breedId);
+
+  console.log("dataBreed", dataBreed);
 
   Carousel.clear();
 
