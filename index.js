@@ -42,6 +42,13 @@ const initialLoad = async () => {
 
     breedSelect.appendChild(optionEl);
   }
+
+  createCarouselItems(dataBreeds[0].id);
+
+  const infoArr = [
+    { infoName: "description:", infoValue: dataBreeds[0].description },
+  ];
+  addBreedInfo(infoArr);
 };
 
 initialLoad();
@@ -61,10 +68,9 @@ initialLoad();
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
 
-const breedSelectHandler = async (event) => {
-  const breedId = event.target.value;
+const createCarouselItems = async (breedId) => {
   const response = await fetch(
-    `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`,
+    `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedId}`,
     {
       headers: {
         "x-api-key": API_KEY,
@@ -75,6 +81,38 @@ const breedSelectHandler = async (event) => {
   const dataBreed = await response.json();
 
   console.log("dataBreeds", dataBreed);
+
+  Carousel.clear();
+
+  for (let i = 0; i < dataBreed.length; i++) {
+    const imgAlt = dataBreed[i].breeds[0].name;
+    const imgSrc = dataBreed[i].url;
+    const imgId = dataBreed[i].id;
+
+    const carouselItem = Carousel.createCarouselItem(imgSrc, imgAlt, imgId);
+
+    Carousel.appendCarousel(carouselItem);
+  }
+  Carousel.start();
+};
+
+const addBreedInfo = (descArr) => {
+  for (let i = 0; i < descArr.length; i++) {
+    const pEl = document.createElement("p");
+    const spanEl = document.createElement("span");
+
+    spanEl.textContent = descArr[i].infoName;
+    spanEl.style.fontWeight = "600";
+    pEl.innerText = descArr[i].infoValue;
+    pEl.appendChild(spanEl);
+    infoDump.appendChild(pEl);
+  }
+};
+
+const breedSelectHandler = async (event) => {
+  const breedId = event.target.value;
+
+  createCarouselItems(breedId);
 };
 
 breedSelect.addEventListener("change", breedSelectHandler);
