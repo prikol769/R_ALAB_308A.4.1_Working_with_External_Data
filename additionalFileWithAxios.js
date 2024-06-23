@@ -17,11 +17,34 @@ const progressBar = document.getElementById("progressBar");
 const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 export const getBreeds = async () => {
+  axios.interceptors.request.use((request) => {
+    console.log("requests begin");
+    request.metadata = request.metadata || {};
+    request.metadata.startTime = new Date().getTime();
+    return request;
+  });
+
+  axios.interceptors.response.use(
+    (response) => {
+      response.config.metadata.endTime = new Date().getTime();
+      response.durationInMS =
+        response.config.metadata.endTime - response.config.metadata.startTime;
+      return response;
+    },
+    (error) => {
+      error.config.metadata.endTime = new Date().getTime();
+      error.durationInMS =
+        error.config.metadata.endTime - error.config.metadata.startTime;
+      throw error;
+    }
+  );
+
   const response = await axios("/breeds");
 
-  const dataBreeds = response.data;
+  const { data, durationInMS } = response;
+  console.log(`Request took ${durationInMS} milliseconds.`);
 
-  return dataBreeds;
+  return data;
 };
 
 export const getBreedById = async (breedId) => {
