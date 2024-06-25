@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const bodyEl = document.querySelector("body");
+
 // Step 0: Store your API key here for reference and easy access.
 const API_KEY =
   "live_PCcSHCjPAHb5MZks4avqi2CanFuybs7IWgBdaiIAIsWjuTFsJeodK9pWhdw0lyLT";
@@ -32,6 +34,7 @@ const updateProgress = (progressEvent) => {
 
 export const getBreeds = async () => {
   axios.interceptors.request.use((request) => {
+    bodyEl.style.cursor = "progress";
     console.log("requests begin");
     request.metadata = request.metadata || {};
     request.metadata.startTime = new Date().getTime();
@@ -40,6 +43,7 @@ export const getBreeds = async () => {
 
   axios.interceptors.response.use(
     (response) => {
+      bodyEl.style.cursor = "default";
       response.config.metadata.endTime = new Date().getTime();
       response.durationInMS =
         response.config.metadata.endTime - response.config.metadata.startTime;
