@@ -90,6 +90,8 @@ export const deleteFavourite = async (imgId) => {
 };
 
 export const getFavourites = async () => {
-  const response = await axios("/favourites");
+  const response = await axios("/favourites", {
+    onDownloadProgress: updateProgress,
+  });
   return response.data;
 };
