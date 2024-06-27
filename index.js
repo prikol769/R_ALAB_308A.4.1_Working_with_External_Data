@@ -1,5 +1,11 @@
 import * as Carousel from "./Carousel.js";
-import { getBreeds, getBreedById } from "./additionalFileWithAxios.js";
+import {
+  getBreeds,
+  getBreedById,
+  postFavourite,
+  getFavourites,
+  deleteFavourite,
+} from "./additionalFileWithAxios.js";
 import axios from "axios";
 
 // The breed selection input element.
@@ -100,16 +106,19 @@ const createCarouselItems = async (breedId) => {
 
     Carousel.appendCarousel(carouselItem);
   }
+
   Carousel.start();
 
   return dataBreed;
 };
 
-const addBreedInfo = (descArr) => {
+const deleteInfoDump = () => {
   while (infoDump.firstChild) {
     infoDump.removeChild(infoDump.firstChild);
   }
+};
 
+const addBreedInfo = (descArr) => {
   for (let i = 0; i < descArr.length; i++) {
     const pEl = document.createElement("p");
     const spanEl = document.createElement("span");
@@ -132,6 +141,8 @@ const addBreedInfo = (descArr) => {
 
 const breedSelectHandler = async (event) => {
   const breedId = event.target.value;
+
+  deleteInfoDump();
 
   const dataBreed = await createCarouselItems(breedId);
 
@@ -200,6 +211,17 @@ breedSelect.addEventListener("change", breedSelectHandler);
  */
 export async function favourite(imgId) {
   // your code here
+  const favourites = await getFavourites();
+  console.log(favourites, "favourites");
+  const alreadyFavourited = favourites.find(
+    (favourite) => favourite.image_id === imgId
+  );
+  console.log(alreadyFavourited, "alreadyFavourited");
+  if (alreadyFavourited) {
+    await deleteFavourite(alreadyFavourited.id);
+  } else {
+    await postFavourite(imgId);
+  }
 }
 
 /**
@@ -211,7 +233,33 @@ export async function favourite(imgId) {
  *    If that isn't in its own function, maybe it should be so you don't have to
  *    repeat yourself in this section.
  */
+const showFavourites = async () => {
+  deleteInfoDump();
+  const favourites = await getFavourites();
 
+  if (favourites.length <= 0) {
+    const pEl = document.createElement("p");
+    pEl.textContent = "You don't have any favorites yet";
+    pEl.style.textAlign = "center";
+    infoDump.appendChild(pEl);
+    console.log("dasda");
+  }
+  console.log(favourites, "showFavourites");
+
+  Carousel.clear();
+
+  for (let i = 0; i < favourites.length; i++) {
+    const imgAlt = favourites[i].image_id;
+    const imgSrc = favourites[i].image.url;
+    const imgId = favourites[i].image_id;
+
+    const carouselItem = Carousel.createCarouselItem(imgSrc, imgAlt, imgId);
+
+    Carousel.appendCarousel(carouselItem);
+  }
+};
+
+getFavouritesBtn.addEventListener("click", showFavourites);
 /**
  * 10. Test your site, thoroughly!
  * - What happens when you try to load the Malayan breed?

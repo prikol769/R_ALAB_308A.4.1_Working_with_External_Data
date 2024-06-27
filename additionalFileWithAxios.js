@@ -76,3 +76,20 @@ export const getBreedById = async (breedId) => {
 
   return dataBreed;
 };
+
+export const postFavourite = async (imgId) => {
+  const response = await axios.post("/favourites", {
+    image_id: imgId,
+  });
+
+  return response.data;
+};
+
+export const deleteFavourite = async (imgId) => {
+  const response = await axios.delete(`/favourites/${imgId}`);
+};
+
+export const getFavourites = async () => {
+  const response = await axios("/favourites");
+  return response.data;
+};
