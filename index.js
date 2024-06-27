@@ -21,7 +21,6 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 const API_KEY =
   "live_PCcSHCjPAHb5MZks4avqi2CanFuybs7IWgBdaiIAIsWjuTFsJeodK9pWhdw0lyLT";
 
-const ArrayOfFavourites = [];
 /**
  * 1. Create an async function "initialLoad" that does the following:
  * - Retrieve a list of breeds from the cat API using fetch().
@@ -78,6 +77,13 @@ initialLoad();
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
 
+const emptyArrMessage = (message) => {
+  const pEl = document.createElement("p");
+  pEl.textContent = message;
+  pEl.style.textAlign = "center";
+  infoDump.appendChild(pEl);
+};
+
 const createCarouselItems = async (breedId) => {
   // const response = await fetch(
   //   `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedId}`,
@@ -91,6 +97,10 @@ const createCarouselItems = async (breedId) => {
   // const dataBreed = await response.json();
 
   const dataBreed = await getBreedById(breedId);
+
+  if (dataBreed.length <= 0) {
+    emptyArrMessage("No pictures!");
+  }
 
   Carousel.clear();
 
@@ -232,10 +242,7 @@ const showFavourites = async () => {
   const favourites = await getFavourites();
 
   if (favourites.length <= 0) {
-    const pEl = document.createElement("p");
-    pEl.textContent = "You don't have any favorites yet";
-    pEl.style.textAlign = "center";
-    infoDump.appendChild(pEl);
+    emptyArrMessage("You don't have any favorites yet!");
   }
 
   Carousel.clear();
