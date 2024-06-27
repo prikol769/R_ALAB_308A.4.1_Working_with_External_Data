@@ -21,6 +21,7 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 const API_KEY =
   "live_PCcSHCjPAHb5MZks4avqi2CanFuybs7IWgBdaiIAIsWjuTFsJeodK9pWhdw0lyLT";
 
+const ArrayOfFavourites = [];
 /**
  * 1. Create an async function "initialLoad" that does the following:
  * - Retrieve a list of breeds from the cat API using fetch().
@@ -40,8 +41,6 @@ const initialLoad = async () => {
   // const dataBreeds = await response.json();
 
   const dataBreeds = await getBreeds();
-
-  console.log("dataBreeds", dataBreeds);
 
   for (let i = 0; i < dataBreeds.length; i++) {
     const optionEl = document.createElement("option");
@@ -93,8 +92,6 @@ const createCarouselItems = async (breedId) => {
 
   const dataBreed = await getBreedById(breedId);
 
-  console.log("dataBreed", dataBreed);
-
   Carousel.clear();
 
   for (let i = 0; i < dataBreed.length; i++) {
@@ -145,8 +142,6 @@ const breedSelectHandler = async (event) => {
   deleteInfoDump();
 
   const dataBreed = await createCarouselItems(breedId);
-
-  console.log(dataBreed, "dataBreed");
 
   const infoArr = [
     { infoName: "Origin:", infoValue: dataBreed[0].breeds[0].origin },
@@ -212,11 +207,10 @@ breedSelect.addEventListener("change", breedSelectHandler);
 export async function favourite(imgId) {
   // your code here
   const favourites = await getFavourites();
-  console.log(favourites, "favourites");
   const alreadyFavourited = favourites.find(
     (favourite) => favourite.image_id === imgId
   );
-  console.log(alreadyFavourited, "alreadyFavourited");
+
   if (alreadyFavourited) {
     await deleteFavourite(alreadyFavourited.id);
   } else {
@@ -242,9 +236,7 @@ const showFavourites = async () => {
     pEl.textContent = "You don't have any favorites yet";
     pEl.style.textAlign = "center";
     infoDump.appendChild(pEl);
-    console.log("dasda");
   }
-  console.log(favourites, "showFavourites");
 
   Carousel.clear();
 
