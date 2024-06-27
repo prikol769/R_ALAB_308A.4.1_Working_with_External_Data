@@ -57,41 +57,63 @@ export const getBreeds = async () => {
     }
   );
 
-  const response = await axios("/breeds", {
-    onDownloadProgress: updateProgress,
-  });
+  try {
+    const response = await axios("/breeds", {
+      onDownloadProgress: updateProgress,
+    });
+    const { data, durationInMS } = response;
+    console.log(`Request took ${durationInMS} milliseconds.`);
 
-  const { data, durationInMS } = response;
-  console.log(`Request took ${durationInMS} milliseconds.`);
-
-  return data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getBreedById = async (breedId) => {
-  const response = await axios(`/images/search?limit=10&breed_ids=${breedId}`, {
-    onDownloadProgress: updateProgress,
-  });
+  try {
+    const response = await axios(
+      `/images/search?limit=10&breed_ids=${breedId}`,
+      {
+        onDownloadProgress: updateProgress,
+      }
+    );
 
-  const dataBreed = response.data;
+    const dataBreed = response.data;
 
-  return dataBreed;
+    return dataBreed;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const postFavourite = async (imgId) => {
-  const response = await axios.post("/favourites", {
-    image_id: imgId,
-  });
+  try {
+    const response = await axios.post("/favourites", {
+      image_id: imgId,
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const deleteFavourite = async (imgId) => {
-  const response = await axios.delete(`/favourites/${imgId}`);
+  try {
+    await axios.delete(`/favourites/${imgId}`);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getFavourites = async () => {
-  const response = await axios("/favourites", {
-    onDownloadProgress: updateProgress,
-  });
-  return response.data;
+  try {
+    const response = await axios("/favourites", {
+      onDownloadProgress: updateProgress,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
